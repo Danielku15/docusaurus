@@ -409,11 +409,7 @@ export default function pluginContentDocs(
       const docsMetadataPath: string = path.join(dataDir, docsMetadataFilename);
       const docsMetadata: string = fs.readFileSync(docsMetadataPath, 'utf-8');
       const virtualModules = new VirtualModulesPlugin({
-        'node_modules/@docusaurus/docs-api/metadata.js': [
-          'module.exports = {',
-          `  docsMetadata: ${docsMetadata}`,
-          '};',
-        ].join('\n'),
+        'node_modules/@docusaurus/plugin-content-docs/docs-metadata.js': `module.exports = ${docsMetadata};`,
       });
 
       return {
