@@ -142,6 +142,7 @@ export default async function processMetadata({
     lastUpdatedBy,
     lastUpdatedAt,
     sidebar_label,
+    raw: frontMatter,
   };
 
   return metadata;
