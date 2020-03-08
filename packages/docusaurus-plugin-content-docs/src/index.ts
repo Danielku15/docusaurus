@@ -406,10 +406,13 @@ export default function pluginContentDocs(
       const {rehypePlugins, remarkPlugins} = options;
 
       // inject a dynamic module which holds the page metadata
+      // webpack does not serve the virtual module if we point it to an
+      // existing folder but missing files. That's why we have the new @docusaurus-meta
+      // namespace
       const docsMetadataPath: string = path.join(dataDir, docsMetadataFilename);
       const docsMetadata: string = fs.readFileSync(docsMetadataPath, 'utf-8');
       const virtualModules = new VirtualModulesPlugin({
-        'node_modules/@docusaurus/plugin-content-docs/docs-metadata.js': `module.exports = ${docsMetadata};`,
+        'node_modules/@docusaurus-meta/docs.js': `module.exports = ${docsMetadata};`,
       });
 
       return {
