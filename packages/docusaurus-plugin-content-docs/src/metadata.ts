@@ -142,8 +142,14 @@ export default async function processMetadata({
     lastUpdatedBy,
     lastUpdatedAt,
     sidebar_label,
-    raw: frontMatter,
   };
+
+  // adopt over all custom keys if they are not part of the metadata already
+  for (let key in frontMatter) {
+    if (frontMatter.hasOwnProperty(key) && !(key in metadata)) {
+      metadata[key] = frontMatter[key];
+    }
+  }
 
   return metadata;
 }

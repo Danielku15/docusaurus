@@ -113,9 +113,7 @@ export interface MetadataRaw extends LastUpdateData {
   sidebar_label?: string;
   editUrl?: string;
   version?: string;
-  raw: {
-    [key: string]: any;
-  };
+  [key: string]: any;
 }
 
 export interface Paginator {
