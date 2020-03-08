@@ -70,6 +70,7 @@ export default function pluginContentDocs(
     generatedFilesDir,
     'docusaurus-plugin-content-docs',
   );
+  const docsMetadataFilename = 'docs-metadata.json';
 
   // Versioning.
   const env = loadEnv(siteDir);
@@ -335,6 +336,13 @@ export default function pluginContentDocs(
         });
       };
 
+      // Generate one file with metadata of all docs
+      // for query access on webpack side
+      await createData(
+        docsMetadataFilename,
+        JSON.stringify(content.docsMetadata, null, 2),
+      );
+
       // If versioning is enabled, we cleverly chunk the generated routes
       // to be by version and pick only needed base metadata.
       if (versioning.enabled) {
@@ -422,6 +430,9 @@ export default function pluginContentDocs(
                         dataDir,
                         `${docuHash(aliasedSource)}.json`,
                       );
+                    },
+                    fullMetadataPath: () => {
+                      return path.join(dataDir, docsMetadataFilename);
                     },
                   },
                 },
