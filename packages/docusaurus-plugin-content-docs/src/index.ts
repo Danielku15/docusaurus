@@ -21,6 +21,7 @@ import createOrder from './order';
 import loadSidebars from './sidebars';
 import processMetadata from './metadata';
 import loadEnv from './env';
+import VirtualModulesPlugin from 'webpack-virtual-modules';
 
 import {
   PluginOptions,
@@ -403,12 +404,25 @@ export default function pluginContentDocs(
     configureWebpack(_config, isServer, utils) {
       const {getBabelLoader, getCacheLoader} = utils;
       const {rehypePlugins, remarkPlugins} = options;
+
+      // inject a dynamic module which holds the page metadata
+      const docsMetadataPath: string = path.join(dataDir, docsMetadataFilename);
+      const docsMetadata: string = fs.readFileSync(docsMetadataPath, 'utf-8');
+      const virtualModules = new VirtualModulesPlugin({
+        'node_modules/@docusaurus/docs-api/metadata.js': [
+          'module.exports = {',
+          `  docsMetadata: ${docsMetadata}`,
+          '};',
+        ].join('\n'),
+      });
+
       return {
         resolve: {
           alias: {
             '~docs': dataDir,
           },
         },
+        plugins: [virtualModules],
         module: {
           rules: [
             {
@@ -430,9 +444,6 @@ export default function pluginContentDocs(
                         dataDir,
                         `${docuHash(aliasedSource)}.json`,
                       );
-                    },
-                    fullMetadataPath: () => {
-                      return path.join(dataDir, docsMetadataFilename);
                     },
                   },
                 },
