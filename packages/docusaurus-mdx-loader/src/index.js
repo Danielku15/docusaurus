@@ -59,6 +59,20 @@ module.exports = async function(fileString) {
     }
   }
 
+  // Read metadata for *all* pages and export it
+  if (
+    options.fullMetadataPath &&
+    typeof options.fullMetadataPath === 'function'
+  ) {
+    const fullMetadataPath = options.fullMetadataPath();
+
+    if (fullMetadataPath) {
+      this.addDependency(fullMetadataPath);
+      const fullMetadata = await readFile(fullMetadataPath, 'utf8');
+      exportStr += `\nexport const fullMetadata = ${fullMetadata};`;
+    }
+  }
+
   const code = `
   import React from 'react';
   import { mdx } from '@mdx-js/react';
