@@ -41,6 +41,7 @@ import {
   VersionToSidebars,
   SidebarItem,
   DocsSidebarItem,
+  RedirectSidebarToRoute,
 } from './types';
 import {Configuration} from 'webpack';
 import {docsVersion} from './version';
@@ -190,6 +191,7 @@ export default function pluginContentDocs(
       // Construct inter-metadata relationship in docsMetadata.
       const docsMetadata: DocsMetadata = {};
       const permalinkToSidebar: PermalinkToSidebar = {};
+      const redirectSidebarToRoute: RedirectSidebarToRoute = {};
       const versionToSidebars: VersionToSidebars = {};
       Object.keys(docsMetadataRaw).forEach(currentID => {
         const {next: nextID, previous: previousID, sidebar} =
@@ -213,8 +215,10 @@ export default function pluginContentDocs(
           next,
         };
 
-        // sourceToPermalink and permalinkToSidebar mapping.
-        const {source, permalink, version} = docsMetadataRaw[currentID];
+        // sourceToPermalink and permalinkToSidebar mapping
+        const {source, permalink, version, sidebarPath} = docsMetadataRaw[
+          currentID
+        ];
         sourceToPermalink[source] = permalink;
         if (sidebar) {
           permalinkToSidebar[permalink] = sidebar;
@@ -224,6 +228,9 @@ export default function pluginContentDocs(
             }
             versionToSidebars[version].add(sidebar);
           }
+        }
+        if (sidebarPath) {
+          redirectSidebarToRoute[permalink] = sidebarPath;
         }
       });
 
@@ -273,6 +280,7 @@ export default function pluginContentDocs(
         docsDir,
         docsSidebars,
         permalinkToSidebar: objectWithKeySorted(permalinkToSidebar),
+        redirectSidebarToRoute: objectWithKeySorted(redirectSidebarToRoute),
         versionToSidebars,
       };
     },
@@ -375,6 +383,7 @@ export default function pluginContentDocs(
                 content.permalinkToSidebar,
                 sidebar => neededSidebars.has(sidebar),
               ),
+              redirectSidebarToRoute: content.redirectSidebarToRoute,
               version,
             };
 
@@ -394,6 +403,7 @@ export default function pluginContentDocs(
         const docsBaseMetadata: DocsBaseMetadata = {
           docsSidebars: content.docsSidebars,
           permalinkToSidebar: content.permalinkToSidebar,
+          redirectSidebarToRoute: content.redirectSidebarToRoute,
         };
 
         const docsBaseRoute = normalizeUrl([baseUrl, routeBasePath, ':route']);

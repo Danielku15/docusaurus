@@ -21,11 +21,18 @@ import styles from './styles.module.css';
 function DocPage(props) {
   const {route: baseRoute, docsMetadata, location} = props;
   // case-sensitive route such as it is defined in the sidebar
+  const {
+    permalinkToSidebar,
+    docsSidebars,
+    version,
+    redirectSidebarToRoute,
+  } = docsMetadata;
+  const currentRouteName =
+    redirectSidebarToRoute[location.pathname] || location.pathname;
   const currentRoute =
     baseRoute.routes.find(route => {
-      return matchPath(location.pathname, route);
+      return matchPath(currentRouteName, route);
     }) || {};
-  const {permalinkToSidebar, docsSidebars, version} = docsMetadata;
   const sidebar = permalinkToSidebar[currentRoute.path];
   const {
     siteConfig: {themeConfig = {}} = {},

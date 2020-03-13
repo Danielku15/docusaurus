@@ -143,6 +143,10 @@ export interface PermalinkToSidebar {
   [permalink: string]: string;
 }
 
+export interface RedirectSidebarToRoute {
+  [permalink: string]: string;
+}
+
 export interface VersionToSidebars {
   [version: string]: Set<string>;
 }
@@ -153,11 +157,12 @@ export interface LoadedContent {
   docsSidebars: DocsSidebar;
   permalinkToSidebar: PermalinkToSidebar;
   versionToSidebars: VersionToSidebars;
+  redirectSidebarToRoute: RedirectSidebarToRoute;
 }
 
 export type DocsBaseMetadata = Pick<
   LoadedContent,
-  'docsSidebars' | 'permalinkToSidebar'
+  'docsSidebars' | 'permalinkToSidebar' | 'redirectSidebarToRoute'
 > & {
   version?: string;
 };

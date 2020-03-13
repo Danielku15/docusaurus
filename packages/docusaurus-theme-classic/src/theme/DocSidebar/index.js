@@ -17,7 +17,7 @@ import styles from './styles.module.css';
 
 const MOBILE_TOGGLE_SIZE = 24;
 
-function DocSidebarItem({item, onItemClick, collapsible}) {
+function DocSidebarItem({item, onItemClick, collapsible, location}) {
   const {items, href, label, type} = item;
   const [collapsed, setCollapsed] = useState(item.collapsed);
   const [prevCollapsedProp, setPreviousCollapsedProp] = useState(null);
@@ -60,6 +60,7 @@ function DocSidebarItem({item, onItemClick, collapsible}) {
                   item={childItem}
                   onItemClick={onItemClick}
                   collapsible={collapsible}
+                  location={location}
                 />
               ))}
             </ul>
@@ -79,6 +80,7 @@ function DocSidebarItem({item, onItemClick, collapsible}) {
                   activeClassName: 'menu__link--active',
                   exact: true,
                   onClick: onItemClick,
+                  location,
                 }
               : {
                   target: '_blank',
@@ -147,6 +149,10 @@ function DocSidebar(props) {
     );
   }
 
+  const location = {
+    pathname: path,
+  };
+
   return (
     <div className={styles.sidebar}>
       <Link className={styles.sidebarLogo} to={logoLink} {...logoLinkProps}>
@@ -205,6 +211,7 @@ function DocSidebar(props) {
                 setShowResponsiveSidebar(false);
               }}
               collapsible={sidebarCollapsible}
+              location={location}
             />
           ))}
         </ul>
